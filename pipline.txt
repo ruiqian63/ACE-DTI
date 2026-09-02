@@ -1,0 +1,40 @@
+DICOM
+↓
+dcm2niix
+↓
+生成 NIfTI + bval + bvec + JSON
+↓
+从每个人 JSON 自动读取
+    PhaseEncodingDirection
+    TotalReadoutTime
+    EchoTime
+    RepetitionTime
+↓
+导入 MRtrix
+↓
+dwidenoise
+↓
+mrdegibbs
+↓
+dwifslpreproc
+    使用该 subject 自己的：
+    -pe_dir
+    -readout_time
+↓
+motion correction
++
+eddy-current correction
+↓
+brain mask / mean b0
+↓
+dwi2tensor
+↓
+FA / MD / AD / RD
+↓
+Dxx / Dyy / Dzz
+↓
+principal eigenvector
+↓
+DEC / color FA
+↓
+等待你手工画 ROI
