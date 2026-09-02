@@ -49,9 +49,46 @@ set -uo pipefail
 INPUT_ROOT="/home/gfk8453/Desktop/DTI analysis/Ann_Data/ACE"
 OUTPUT_ROOT="/home/gfk8453/Desktop/DTI analysis/Ann_Data/results"
 
-#mkdir -p "$OUTPUT_ROOT"
-export FSLDIR=/opt/fsl
-export PATH="$FSLDIR/bin:$PATH"
+mkdir -p "$OUTPUT_ROOT"
+
+# ------------------------------------------------------------
+# FSL environment initialization
+# ------------------------------------------------------------
+
+export FSLDIR="/opt/fsl"
+
+if [ ! -f "${FSLDIR}/etc/fslconf/fsl.sh" ]; then
+    echo "ERROR: FSL configuration file not found:"
+    echo "  ${FSLDIR}/etc/fslconf/fsl.sh"
+    exit 1
+fi
+
+# Load the complete FSL environment, including FSLOUTPUTTYPE.
+# This is required by FSL tools called by dwifslpreproc / eddy.
+source "${FSLDIR}/etc/fslconf/fsl.sh"
+
+# Ensure FSL executables are visible even if the parent shell PATH
+# was not configured for FSL.
+export PATH="${FSLDIR}/bin:${PATH}"
+
+# Set explicitly for reproducibility.
+export FSLOUTPUTTYPE="NIFTI_GZ"
+
+echo "FSL environment initialized:"
+echo "  FSLDIR        = $FSLDIR"
+echo "  FSLOUTPUTTYPE = $FSLOUTPUTTYPE"
+
+if command -v eddy >/dev/null 2>&1; then
+    echo "  eddy          = $(command -v eddy)"
+elif command -v eddy_openmp >/dev/null 2>&1; then
+    echo "  eddy_openmp   = $(command -v eddy_openmp)"
+else
+    EDDY_CUDA="$(compgen -c | grep '^eddy_cuda' | head -n 1 || true)"
+    if [ -n "$EDDY_CUDA" ]; then
+        echo "  eddy CUDA     = $(command -v "$EDDY_CUDA")"
+    fi
+fi
+
 # ------------------------------------------------------------
 # Dependency checks
 # ------------------------------------------------------------
@@ -103,7 +140,7 @@ skipped=0
 # Subject loop
 # ------------------------------------------------------------
 
-for SUBJECT_DIR in "$INPUT_ROOT"/*; do
+for SUBJECT_DIR in "$INPUT_ROOT"/AGRJ67; do
     [ -d "$SUBJECT_DIR" ] || continue
 
     SUBJECT="$(basename "$SUBJECT_DIR")"
@@ -356,6 +393,7 @@ PY
             -rpe_none \
             -pe_dir "$PE_DIR" \
             -readout_time "$READOUT" \
+            -eddy_options " --slm=linear " \
             -eddyqc_all "$QC/eddy_qc" \
             -force
 
