@@ -1,0 +1,50 @@
+results/
+└── AGRJ67/
+    ├── 00_dcm2niix/
+    │   ├── AGRJ67_DTI.nii.gz
+    │   ├── AGRJ67_DTI.bval
+    │   ├── AGRJ67_DTI.bvec
+    │   └── AGRJ67_DTI.json
+    │
+    ├── 01_preproc/
+    │   ├── dti_raw.mif
+    │   ├── dti_denoised.mif
+    │   ├── noise.mif
+    │   ├── dti_degibbs.mif
+    │   ├── dti_preproc.mif
+    │   ├── mask.mif
+    │   └── mean_b0.mif
+    │
+    ├── 02_tensor/
+    │   ├── tensor.mif
+    │   └── v1.mif
+    │
+    ├── 03_metrics/
+    │   ├── FA.mif
+    │   ├── FA.nii.gz
+    │   ├── MD.mif
+    │   ├── MD.nii.gz
+    │   ├── AD.mif
+    │   ├── AD.nii.gz
+    │   ├── RD.mif
+    │   └── RD.nii.gz
+    │
+    ├── 04_alps_pre/
+    │   ├── Dxx.mif
+    │   ├── Dyy.mif
+    │   ├── Dzz.mif
+    │   ├── DEC.mif
+    │   └── 对应 nii.gz
+    │
+    ├── 05_roi/
+    │   └── README_ROI.txt
+    │
+    └── qc/
+        ├── acquisition_metadata.tsv
+        ├── gradient_count.txt
+        ├── gradients_mrtrix.txt
+        ├── mrinfo_raw.txt
+        ├── mrinfo_preproc.txt
+        ├── metric_stats.txt
+        ├── eddy_qc/
+        └── pipeline.log
