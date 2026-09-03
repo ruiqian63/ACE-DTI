@@ -24,6 +24,9 @@ PROGRESS_CSV="$ROOT/roi_progress.csv"
 
 ROI_OPACITY=0.65
 
+# Fixed axial slice to open for every subject
+Z_SLICE=46
+
 
 # ROI names
 ROI_NAMES=(
@@ -155,7 +158,7 @@ fi
 # Pre-flight checks
 # ------------------------------------------------------------
 
-for cmd in mrview mrcalc mrstats; do
+for cmd in mrview mrcalc mrstats mrinfo; do
 
     if ! command -v "$cmd" >/dev/null 2>&1; then
 
@@ -204,6 +207,7 @@ echo
 echo "Results root       : $ROOT"
 echo "Subjects found     : $TOTAL"
 echo "ROI size           : flexible"
+echo "Initial axial z    : $Z_SLICE"
 echo "Progress CSV       : $PROGRESS_CSV"
 echo
 echo "ROI convention:"
@@ -384,9 +388,27 @@ for SUBJDIR in "${SUBJECT_DIRS[@]}"; do
 
     # --------------------------------------------------------
     # Open DEC + ROI editor
+    # Start every subject at axial z = Z_SLICE.
+    # x/y are automatically set to the image centre.
     # --------------------------------------------------------
 
+    read -r SX SY SZ _ <<< "$(mrinfo "$DEC" -size)"
+
+    VX=$(( SX / 2 ))
+    VY=$(( SY / 2 ))
+
+    if [ "$Z_SLICE" -ge "$SZ" ]; then
+        echo "WARNING: requested z=$Z_SLICE but image has only $SZ slices."
+        echo "Using last valid slice instead."
+        VZ=$(( SZ - 1 ))
+    else
+        VZ="$Z_SLICE"
+    fi
+
+    echo "Opening at voxel centre: x=$VX, y=$VY, z=$VZ"
+
     mrview "$DEC" \
+        -voxel "$VX,$VY,$VZ" \
         -roi.load "$ROIDIR/proj_R.mif" \
         -roi.colour "$PROJ_COLOR" \
         -roi.opacity "$ROI_OPACITY" \
