@@ -1,5 +1,7 @@
 # DTI-ALPS Analysis – Command Cheatsheet
 
+---
+
 ## 1. 手动画 ALPS ROI
 
 批量进入 ROI 工作流，每个 subject 默认打开 `z=46`：
@@ -8,19 +10,13 @@
 bash "/home/gfk8453/Desktop/DTI analysis/Ann_Data/code/draw_alps_roi_final_z46.sh"
 ```
 
-每个 subject 保存 4 个 ROI：
+每个 subject 保存：
 
 ```text
 proj_R.mif
 assoc_R.mif
 proj_L.mif
 assoc_L.mif
-```
-
-保存位置：
-
-```text
-/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/<SUBJECT>/05_roi/
 ```
 
 ROI 方向原则：
@@ -37,17 +33,12 @@ Dyy > Dxx and Dyy > Dzz
 
 ## 2. 查看某个 subject 的 DEC
 
-例如 `AGUE80`：
+只需要修改第一行：
 
 ```bash
-mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGUE80/04_alps_pre/DEC.mif" \
--voxel 65,65,46
-```
+sub="AGRJ67"
 
-例如 `AGRJ67`：
-
-```bash
-mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/04_alps_pre/DEC.mif" \
+mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/04_alps_pre/DEC.mif" \
 -voxel 65,65,46
 ```
 
@@ -55,33 +46,57 @@ mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/04_alps_pre/D
 
 ## 3. 查看 DEC + 4 个 ROI
 
-例如 `AGRJ67`：
-
 ```bash
-mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/04_alps_pre/DEC.mif" \
--roi.load "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/05_roi/proj_R.mif" \
--roi.load "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/05_roi/assoc_R.mif" \
--roi.load "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/05_roi/proj_L.mif" \
--roi.load "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/05_roi/assoc_L.mif"
+sub="AGRJ67"
+
+mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/04_alps_pre/DEC.mif" \
+-roi.load "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/proj_R.mif" \
+-roi.load "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/assoc_R.mif" \
+-roi.load "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/proj_L.mif" \
+-roi.load "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/assoc_L.mif"
 ```
 
 ---
 
 ## 4. 查看单个 ROI voxel 数
 
-例如 `AGRJ67` 的 `proj_R`：
+### proj_R
 
 ```bash
-mrstats "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/05_roi/proj_R.mif" \
--mask "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/05_roi/proj_R.mif" \
+sub="AGRJ67"
+
+mrstats "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/proj_R.mif" \
+-mask "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/proj_R.mif" \
 -output count
 ```
 
-例如查看 `assoc_R`：
+### assoc_R
 
 ```bash
-mrstats "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/05_roi/assoc_R.mif" \
--mask "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/05_roi/assoc_R.mif" \
+sub="AGRJ67"
+
+mrstats "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/assoc_R.mif" \
+-mask "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/assoc_R.mif" \
+-output count
+```
+
+### proj_L
+
+```bash
+sub="AGRJ67"
+
+mrstats "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/proj_L.mif" \
+-mask "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/proj_L.mif" \
+-output count
+```
+
+### assoc_L
+
+```bash
+sub="AGRJ67"
+
+mrstats "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/assoc_L.mif" \
+-mask "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/assoc_L.mif" \
 -output count
 ```
 
@@ -89,36 +104,84 @@ mrstats "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/05_roi/assoc
 
 ## 5. 查看某个 ROI 的 Dxx / Dyy / Dzz
 
-例如检查 `AGRJ67` 的 `proj_R`：
+### Projection Right
 
 ```bash
+sub="AGRJ67"
+roi="proj_R"
+
 for m in Dxx Dyy Dzz; do
     echo -n "$m = "
-    mrstats "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/04_alps_pre/${m}.mif" \
-    -mask "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/05_roi/proj_R.mif" \
+    mrstats "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/04_alps_pre/${m}.mif" \
+    -mask "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/${roi}.mif" \
     -output mean
 done
 ```
 
-Projection 应满足：
+应满足：
 
 ```text
 Dzz > Dxx
 Dzz > Dyy
 ```
 
-检查 `assoc_R`：
+### Association Right
 
 ```bash
+sub="AGRJ67"
+roi="assoc_R"
+
 for m in Dxx Dyy Dzz; do
     echo -n "$m = "
-    mrstats "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/04_alps_pre/${m}.mif" \
-    -mask "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGRJ67/05_roi/assoc_R.mif" \
+    mrstats "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/04_alps_pre/${m}.mif" \
+    -mask "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/${roi}.mif" \
     -output mean
 done
 ```
 
-Association 应满足：
+应满足：
+
+```text
+Dyy > Dxx
+Dyy > Dzz
+```
+
+### Projection Left
+
+```bash
+sub="AGRJ67"
+roi="proj_L"
+
+for m in Dxx Dyy Dzz; do
+    echo -n "$m = "
+    mrstats "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/04_alps_pre/${m}.mif" \
+    -mask "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/${roi}.mif" \
+    -output mean
+done
+```
+
+应满足：
+
+```text
+Dzz > Dxx
+Dzz > Dyy
+```
+
+### Association Left
+
+```bash
+sub="AGRJ67"
+roi="assoc_L"
+
+for m in Dxx Dyy Dzz; do
+    echo -n "$m = "
+    mrstats "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/04_alps_pre/${m}.mif" \
+    -mask "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/${roi}.mif" \
+    -output mean
+done
+```
+
+应满足：
 
 ```text
 Dyy > Dxx
@@ -128,8 +191,6 @@ Dyy > Dzz
 ---
 
 ## 6. 批量 ROI QC
-
-运行最新版 QC：
 
 ```bash
 python3 "/home/gfk8453/Desktop/DTI analysis/Ann_Data/code/01_qc_alps_rois_v3_spatial_geometry.py"
@@ -141,7 +202,7 @@ python3 "/home/gfk8453/Desktop/DTI analysis/Ann_Data/code/01_qc_alps_rois_v3_spa
 /home/gfk8453/Desktop/DTI analysis/Ann_Data/results/alps_roi_qc.csv
 ```
 
-QC 包括：
+QC：
 
 ```text
 geometry_qc
@@ -153,13 +214,13 @@ direction_qc
 overall_qc
 ```
 
-ROI 中心坐标沿 MRtrix x 轴应满足：
+ROI x 坐标顺序：
 
 ```text
 assoc_L < proj_L < proj_R < assoc_R
 ```
 
-MRView radiological display 中，屏幕从左到右则是：
+MRView radiological display 屏幕从左到右：
 
 ```text
 assoc_R → proj_R → proj_L → assoc_L
@@ -168,8 +229,6 @@ assoc_R → proj_R → proj_L → assoc_L
 ---
 
 ## 7. 查看 QC 结果
-
-直接打开 QC CSV：
 
 ```bash
 xdg-open "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/alps_roi_qc.csv"
@@ -181,13 +240,7 @@ xdg-open "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/alps_roi_qc.csv"
 column -s, -t < "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/alps_roi_qc.csv" | less -S
 ```
 
-退出：
-
-```text
-q
-```
-
-查找所有包含 FAIL 的记录：
+查找 FAIL：
 
 ```bash
 grep ",FAIL," "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/alps_roi_qc.csv"
@@ -197,19 +250,19 @@ grep ",FAIL," "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/alps_roi_qc.c
 
 ## 8. 批量计算 ALPS + 写入 Excel
 
-先运行 ROI QC：
+先 QC：
 
 ```bash
 python3 "/home/gfk8453/Desktop/DTI analysis/Ann_Data/code/01_qc_alps_rois_v3_spatial_geometry.py"
 ```
 
-然后计算 ALPS 并写入 Excel：
+再计算：
 
 ```bash
 python3 "/home/gfk8453/Desktop/DTI analysis/Ann_Data/code/02_calculate_alps_to_excel.py"
 ```
 
-ALPS 公式：
+公式：
 
 ```text
 ALPS_R =
@@ -224,47 +277,31 @@ ALPS_mean =
 (ALPS_R + ALPS_L) / 2
 ```
 
-结果写入：
+Excel：
 
 ```text
 /home/gfk8453/Desktop/DTI analysis/Ann_Data/results/ACE study groups demos.xlsx
 ```
 
-详细左右 ALPS 结果：
+详细结果：
 
 ```text
 /home/gfk8453/Desktop/DTI analysis/Ann_Data/results/alps_results_detailed.csv
-```
-
-扫描对应关系：
-
-```text
-SUBJECT      → TIME 1
-SUBJECT_1    → TIME 1
-SUBJECT_2    → TIME 2
-```
-
-例如：
-
-```text
-AGRJ67   → TIME 1 / AGRJ67
-AGRJ67_2 → TIME 2 / AGRJ67
 ```
 
 ---
 
 ## 9. 单独计算一个 subject 的 ALPS
 
-例如 `AGRJ67`：
+只改第一行：
 
 ```bash
-SUBJ="AGRJ67"
-ROOT="/home/gfk8453/Desktop/DTI analysis/Ann_Data/results"
+sub="AGRJ67"
 
-DXX="$ROOT/$SUBJ/04_alps_pre/Dxx.mif"
-DYY="$ROOT/$SUBJ/04_alps_pre/Dyy.mif"
-DZZ="$ROOT/$SUBJ/04_alps_pre/Dzz.mif"
-ROI="$ROOT/$SUBJ/05_roi"
+DXX="/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/04_alps_pre/Dxx.mif"
+DYY="/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/04_alps_pre/Dyy.mif"
+DZZ="/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/04_alps_pre/Dzz.mif"
+ROI="/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi"
 
 Dxx_proj_R=$(mrstats "$DXX" -mask "$ROI/proj_R.mif" -output mean -quiet | tr -d '[:space:]')
 Dyy_proj_R=$(mrstats "$DYY" -mask "$ROI/proj_R.mif" -output mean -quiet | tr -d '[:space:]')
@@ -276,49 +313,43 @@ Dyy_proj_L=$(mrstats "$DYY" -mask "$ROI/proj_L.mif" -output mean -quiet | tr -d 
 Dxx_assoc_L=$(mrstats "$DXX" -mask "$ROI/assoc_L.mif" -output mean -quiet | tr -d '[:space:]')
 Dzz_assoc_L=$(mrstats "$DZZ" -mask "$ROI/assoc_L.mif" -output mean -quiet | tr -d '[:space:]')
 
-ALPS_R=$(awk -v a="$Dxx_proj_R" -v b="$Dxx_assoc_R" -v c="$Dyy_proj_R" -v d="$Dzz_assoc_R" \
+ALPS_R=$(awk \
+-v a="$Dxx_proj_R" \
+-v b="$Dxx_assoc_R" \
+-v c="$Dyy_proj_R" \
+-v d="$Dzz_assoc_R" \
 'BEGIN{printf "%.6f",(a+b)/(c+d)}')
 
-ALPS_L=$(awk -v a="$Dxx_proj_L" -v b="$Dxx_assoc_L" -v c="$Dyy_proj_L" -v d="$Dzz_assoc_L" \
+ALPS_L=$(awk \
+-v a="$Dxx_proj_L" \
+-v b="$Dxx_assoc_L" \
+-v c="$Dyy_proj_L" \
+-v d="$Dzz_assoc_L" \
 'BEGIN{printf "%.6f",(a+b)/(c+d)}')
 
-ALPS_MEAN=$(awk -v l="$ALPS_L" -v r="$ALPS_R" \
+ALPS_MEAN=$(awk \
+-v l="$ALPS_L" \
+-v r="$ALPS_R" \
 'BEGIN{printf "%.6f",(l+r)/2}')
 
+echo
+echo "============================"
+echo "Subject   = $sub"
 echo "ALPS_R    = $ALPS_R"
 echo "ALPS_L    = $ALPS_L"
 echo "ALPS_mean = $ALPS_MEAN"
+echo "============================"
 ```
 
 ---
 
 ## 10. HIV vs NC ALPS 比较
 
-TIME 1 和 TIME 2 分开分析：
-
 ```bash
 python3 "/home/gfk8453/Desktop/DTI analysis/Ann_Data/code/03_compare_hiv_nc_alps.py"
 ```
 
-输出目录：
-
-```text
-/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/ALPS_HIV_vs_NC/
-```
-
-包含：
-
-```text
-TIME1_ALPS_HIV_vs_NC.png
-TIME1_ALPS_HIV_vs_NC.svg
-
-TIME2_ALPS_HIV_vs_NC.png
-TIME2_ALPS_HIV_vs_NC.svg
-
-ALPS_HIV_vs_NC_stats.csv
-```
-
-打开结果目录：
+打开结果：
 
 ```bash
 xdg-open "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/ALPS_HIV_vs_NC"
@@ -326,55 +357,75 @@ xdg-open "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/ALPS_HIV_vs_NC"
 
 ---
 
-## 11. 查看常规 DTI maps
-
-### FA
+## 11. 查看 FA
 
 ```bash
-mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGUE80/03_metrics/FA.mif"
-```
+sub="AGRJ67"
 
-### MD
-
-```bash
-mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGUE80/03_metrics/MD.mif"
-```
-
-### AD
-
-```bash
-mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGUE80/03_metrics/AD.mif"
-```
-
-### RD
-
-```bash
-mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGUE80/03_metrics/RD.mif"
+mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/03_metrics/FA.mif"
 ```
 
 ---
 
-## 12. 查看 Dxx / Dyy / Dzz
-
-### Dxx
+## 12. 查看 MD
 
 ```bash
-mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGUE80/04_alps_pre/Dxx.mif"
+sub="AGRJ67"
+
+mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/03_metrics/MD.mif"
 ```
 
-### Dyy
+---
+
+## 13. 查看 AD
 
 ```bash
-mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGUE80/04_alps_pre/Dyy.mif"
+sub="AGRJ67"
+
+mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/03_metrics/AD.mif"
 ```
 
-### Dzz
+---
+
+## 14. 查看 RD
 
 ```bash
-mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGUE80/04_alps_pre/Dzz.mif"
+sub="AGRJ67"
+
+mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/03_metrics/RD.mif"
 ```
 
-方向定义：
+---
+
+## 15. 查看 Dxx
+
+```bash
+sub="AGRJ67"
+
+mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/04_alps_pre/Dxx.mif"
+```
+
+---
+
+## 16. 查看 Dyy
+
+```bash
+sub="AGRJ67"
+
+mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/04_alps_pre/Dyy.mif"
+```
+
+---
+
+## 17. 查看 Dzz
+
+```bash
+sub="AGRJ67"
+
+mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/04_alps_pre/Dzz.mif"
+```
+
+方向：
 
 ```text
 Dxx = Left–Right
@@ -382,7 +433,7 @@ Dyy = Anterior–Posterior
 Dzz = Superior–Inferior
 ```
 
-DEC 颜色：
+DEC：
 
 ```text
 Red   = x = LR
@@ -392,22 +443,80 @@ Blue  = z = SI
 
 ---
 
-## 13. 查看 mean b0
+## 18. 查看 mean b0
 
 ```bash
-mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGUE80/01_preproc/mean_b0.mif"
-```
+sub="AGRJ67"
 
-mean b0 + brain mask：
-
-```bash
-mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGUE80/01_preproc/mean_b0.mif" \
--overlay.load "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/AGUE80/01_preproc/mask.mif"
+mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/01_preproc/mean_b0.mif"
 ```
 
 ---
 
-## 14. 查看结果 Excel
+## 19. 查看 mean b0 + mask
+
+```bash
+sub="AGRJ67"
+
+mrview "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/01_preproc/mean_b0.mif" \
+-overlay.load "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/01_preproc/mask.mif"
+```
+
+---
+
+## 20. 查看某个 subject 的文件
+
+```bash
+sub="AGRJ67"
+
+ls -lh "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/"
+```
+
+查看 preprocessing：
+
+```bash
+sub="AGRJ67"
+
+ls -lh "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/01_preproc/"
+```
+
+查看 metrics：
+
+```bash
+sub="AGRJ67"
+
+ls -lh "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/03_metrics/"
+```
+
+查看 ALPS maps：
+
+```bash
+sub="AGRJ67"
+
+ls -lh "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/04_alps_pre/"
+```
+
+查看 ROI：
+
+```bash
+sub="AGRJ67"
+
+ls -lh "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub/05_roi/"
+```
+
+---
+
+## 21. 打开某个 subject 的结果文件夹
+
+```bash
+sub="AGRJ67"
+
+xdg-open "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/$sub"
+```
+
+---
+
+## 22. 查看结果 Excel
 
 ```bash
 xdg-open "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/ACE study groups demos.xlsx"
@@ -415,7 +524,7 @@ xdg-open "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/ACE study groups d
 
 ---
 
-## 15. 查看详细 ALPS CSV
+## 23. 查看 ALPS detailed CSV
 
 ```bash
 xdg-open "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/alps_results_detailed.csv"
@@ -423,87 +532,27 @@ xdg-open "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results/alps_results_detai
 
 ---
 
-## 16. 查看当前已经完成 ROI 的 subject 数量
+# Core Workflow
 
-```bash
-for d in "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results"/*; do
-    [ -d "$d" ] || continue
-    ok=1
-    for r in proj_R assoc_R proj_L assoc_L; do
-        f="$d/05_roi/${r}.mif"
-        [ -f "$f" ] || { ok=0; break; }
-        n=$(mrstats "$f" -mask "$f" -output count -quiet 2>/dev/null | tr -d '[:space:]')
-        [ -n "$n" ] && [ "${n%.*}" -gt 0 ] || { ok=0; break; }
-    done
-    [ "$ok" -eq 1 ] && basename "$d"
-done
-```
-
-只统计人数：
-
-```bash
-for d in "/home/gfk8453/Desktop/DTI analysis/Ann_Data/results"/*; do
-    [ -d "$d" ] || continue
-    ok=1
-    for r in proj_R assoc_R proj_L assoc_L; do
-        f="$d/05_roi/${r}.mif"
-        [ -f "$f" ] || { ok=0; break; }
-        n=$(mrstats "$f" -mask "$f" -output count -quiet 2>/dev/null | tr -d '[:space:]')
-        [ -n "$n" ] && [ "${n%.*}" -gt 0 ] || { ok=0; break; }
-    done
-    [ "$ok" -eq 1 ] && basename "$d"
-done | wc -l
-```
-
----
-
-# Recommended Workflow
-
-```text
-Raw DTI
-   ↓
-Preprocessing
-   ↓
-Tensor fitting
-   ↓
-FA / MD / AD / RD
-   ↓
-Dxx / Dyy / Dzz
-   ↓
-DEC
-   ↓
-Manual ROI drawing
-   ↓
-ROI QC
-   ↓
-ALPS calculation
-   ↓
-Write Excel
-   ↓
-HIV vs NC analysis
-```
-
-## 核心运行顺序
-
-### 1. Draw ROI
+## 1. Draw ROI
 
 ```bash
 bash "/home/gfk8453/Desktop/DTI analysis/Ann_Data/code/draw_alps_roi_final_z46.sh"
 ```
 
-### 2. ROI QC
+## 2. QC
 
 ```bash
 python3 "/home/gfk8453/Desktop/DTI analysis/Ann_Data/code/01_qc_alps_rois_v3_spatial_geometry.py"
 ```
 
-### 3. Calculate ALPS + update Excel
+## 3. Calculate ALPS + update Excel
 
 ```bash
 python3 "/home/gfk8453/Desktop/DTI analysis/Ann_Data/code/02_calculate_alps_to_excel.py"
 ```
 
-### 4. HIV vs NC analysis + figures
+## 4. HIV vs NC analysis
 
 ```bash
 python3 "/home/gfk8453/Desktop/DTI analysis/Ann_Data/code/03_compare_hiv_nc_alps.py"
