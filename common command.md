@@ -63,8 +63,8 @@ mrview "$ROOT/$SUBJ/04_alps_pre/DEC.mif" \
 ## 3. 查看 DEC + 4 个 ROI
 
 ```bash
-SUBJ="AGUE80"
-
+SUBJ="AGRJ67"
+ROOT="/home/gfk8453/Desktop/DTI analysis/Ann_Data/results"
 mrview "$ROOT/$SUBJ/04_alps_pre/DEC.mif" \
 -roi.load "$ROOT/$SUBJ/05_roi/proj_R.mif" \
 -roi.load "$ROOT/$SUBJ/05_roi/assoc_R.mif" \
