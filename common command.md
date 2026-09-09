@@ -7,7 +7,7 @@
 批量进入 ROI 工作流，每个 subject 默认打开 `z=46`：
 
 ```bash
-bash "/home/gfk8453/Desktop/DTI analysis/Ann_Data/code/draw_alps_roi_final_z46.sh"
+bash "/home/gfk8453/Desktop/DTI analysis/Ann_Data/code/draw_alps_roi.sh"
 ```
 
 每个 subject 保存：
